@@ -1,0 +1,6 @@
+description: An array of commissions
+content:
+  application/json:
+    schema:
+      type: array
+      items: '#/components/schemas/Commission'

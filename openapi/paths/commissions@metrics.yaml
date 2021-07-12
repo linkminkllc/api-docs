@@ -1,0 +1,113 @@
+get:
+  tags:
+    - Commissions
+  summary: Return metrics about commissions
+  description: |
+    Returns an object with metrics about the set of commissions that would be
+    returned from the provided filters.
+  operationId: getCommissionMetrics
+  security:
+    - api_key: []
+    - basic_auth: []
+  parameters:
+    - name: conversion_id
+      in: query
+      description: Only return charges from this conversion.
+      required: false
+      schema:
+        type: string
+    - name: max_date
+      in: query
+      description: Return results where the `created` field is less than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+    - name: min_date
+      in: query
+      description: Return results where the `created` field is greater than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+    - name: status
+      in: query
+      description: Return results where the `status` equals this value.
+      required: false
+      schema:
+        type: 
+        enum: [pending, approved, paid, denied, scheduled]
+    - name: affiliate_id
+      in: query
+      description: Only return results for this affiliate.
+      required: false
+      schema:
+        type: string
+    - name: affiliate_name
+      in: query
+      description: Only return results for the affiliates with this name (partial matches allowed)
+      schema:
+        type: string
+    - name: customer_id
+      in: query
+      description: Only return results for commissions related to this Stripe customer.
+      schema:
+        type: string
+      example: cus_abc123
+    - name: customer_email
+      in: query
+      description: Only return results for commissions related to these Stripe customers (customer emails aren't unique in Stripe).
+      schema:
+        type: string
+  responses:
+    '200':
+      description: Returns an object with metrics about the commissions in the set described by the provided filters.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              filters:
+                description: An object with the filters used on this request.
+                type: object
+              metrics:
+                description: The metrics for the current filter set.
+                type: object
+                properties:
+                  count:
+                    description: The number of commissions in the set described by the provided filters
+                    type: integer
+                    example: 1756
+    # '200':
+    #   description: OK
+    #   headers:
+    #     X-Rate-Limit:
+    #       description: calls per hour allowed by the user
+    #       schema:
+    #         type: integer
+    #         format: int32
+    #     X-Expires-After:
+    #       $ref: ../components/headers/ExpiresAfter.yaml
+    #   content:
+    #     application/json:
+    #       schema:
+    #         type: string
+    #       examples:
+    #         response:
+    #           value: Hello world!
+    #     application/xml:
+    #       schema:
+    #         type: string
+    #     text/csv:
+    #       schema:
+    #         type: string
+  # requestBody:
+  #   content:
+  #     application/json:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #     application/xml:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #   description: Echo payload
+  #   required: true

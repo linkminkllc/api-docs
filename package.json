@@ -2,7 +2,8 @@
   "name": "linkmink",
   "version": "1.0.0",
   "dependencies": {
-    "@redocly/openapi-cli": "^1.0.0-beta.54"
+    "@redocly/openapi-cli": "^1.0.0-beta.54",
+    "latest": "^0.2.0"
   },
   "private": true,
   "scripts": {

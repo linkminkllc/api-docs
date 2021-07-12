@@ -1,14 +1,13 @@
 openapi: 3.0.2
 info:
-  version: 1.0.0
-  title: Example.com
-  termsOfService: 'https://example.com/terms/'
+  version: 0.1.0
+  title: LinkMink
+  termsOfService: 'api.linkmink.com/terms'
   contact:
-    email: contact@example.com
-    url: 'http://example.com/contact'
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    email: hello@linkmink.com
+  # license:
+  #   name: Apache 2.0
+  #   url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
   x-logo:
     url: 'https://redocly.github.io/openapi-template/logo.png'
   description: >
@@ -53,8 +52,8 @@ externalDocs:
   description: Find out how to create a GitHub repo for your OpenAPI definition.
   url: 'https://github.com/Rebilly/generator-openapi-repo'
 tags:
-  - name: Echo
-    description: Example echo operations
+  - name: Commissions
+    description: Endpoints for working with commissions
   - name: User
     description: Operations about user
 servers:
@@ -63,8 +62,10 @@ servers:
 paths:
   '/users/{username}':
     $ref: 'paths/users@{username}.yaml'
-  /echo:
-    $ref: paths/echo.yaml
+  /commissions:
+    $ref: paths/commissions.yaml
+  /commissions/metrics:
+    $ref: paths/commissions@metrics.yaml
 components:
   securitySchemes:
     main_auth:

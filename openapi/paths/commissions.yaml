@@ -1,0 +1,104 @@
+get:
+  tags:
+    - Commissions
+  summary: List all commissions
+  description: |
+    Returns a list of commissions that have been created. The commissions are
+    returned in sorted order, with most recent commissions first by default.
+  operationId: listCommissions
+  security:
+    - api_key: []
+    - basic_auth: []
+  parameters:
+    - name: conversion_id
+      in: query
+      description: Only return charges from this conversion.
+      required: false
+      schema:
+        type: string
+    - name: max_date
+      in: query
+      description: Return results where the `created` field is less than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+    - name: min_date
+      in: query
+      description: Return results where the `created` field is greater than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+    - name: status
+      in: query
+      description: Return results where the `status` equals this value.
+      required: false
+      schema:
+        type: 
+        enum: [pending, approved, paid, denied, scheduled]
+    - name: affiliate_id
+      in: query
+      description: Only return results for this affiliate.
+      required: false
+      schema:
+        type: string
+    - name: affiliate_name
+      in: query
+      description: Only return results for the affiliates with this name (partial matches allowed)
+      schema:
+        type: string
+    - name: customer_id
+      in: query
+      description: Only return results for commissions related to this Stripe customer.
+      schema:
+        type: string
+      example: cus_abc123
+    - name: customer_email
+      in: query
+      description: Only return results for commissions related to these Stripe customers (customer emails aren't unique in Stripe).
+      schema:
+        type: string
+  responses:
+    description: Returns a list of commissions if valid filters were provided, and returns an error otherwise
+    '200':
+      description: Returns a list of commissions if valid filters were provided, and returns an error otherwise
+      content:
+        application/json:
+          schema:
+            type: array
+            items: 
+              $ref: ../components/schemas/Commission.yaml
+    # '200':
+    #   description: OK
+    #   headers:
+    #     X-Rate-Limit:
+    #       description: calls per hour allowed by the user
+    #       schema:
+    #         type: integer
+    #         format: int32
+    #     X-Expires-After:
+    #       $ref: ../components/headers/ExpiresAfter.yaml
+    #   content:
+    #     application/json:
+    #       schema:
+    #         type: string
+    #       examples:
+    #         response:
+    #           value: Hello world!
+    #     application/xml:
+    #       schema:
+    #         type: string
+    #     text/csv:
+    #       schema:
+    #         type: string
+  # requestBody:
+  #   content:
+  #     application/json:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #     application/xml:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #   description: Echo payload
+  #   required: true

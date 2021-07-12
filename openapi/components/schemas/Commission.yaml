@@ -1,0 +1,40 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the object
+    type: string
+    example: com_MdZEf3LYnHxDOhwasVjQ 
+  affiliate:
+    description: ID of the affiliate this commission is for.
+    type: string (Expandable)
+    length: 6
+    example: 3eI1Sw
+  commission:
+    description: Amount of the commission in the smallest currency unit (e.g. 100 cents for $1.00).
+    type: integer
+    example: 524
+  conversion:
+    description: ID of the conversion this commission is for.
+    type: integer
+    example: 524
+  created_at:
+    description: Unix timestamp when this commission was created.
+    type: integer
+    example: 1626084731998
+  currency:
+    description: ISO currency code, in lowercase, of the `commission` and `revenue`.
+    type: string
+    example: usd
+  livemode:
+    description: Has the value true if the object exists in live mode or the value false if the object exists in test mode.
+    type: boolean
+    example: true
+  payout:
+    description: ID of the payout this commission is bundled in.
+    type: string
+    nullable: true
+    example: pyo_lsdkfj5oAdiislQ
+  revenue: 
+    description: Amount of the revenue in the smallest currency unit (e.g. 100 cents for $1.00).
+    type: string
+    example: 1747
