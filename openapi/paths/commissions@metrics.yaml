@@ -6,9 +6,6 @@ get:
     Returns an object with metrics about the set of commissions that would be
     returned from the provided filters.
   operationId: getCommissionMetrics
-  security:
-    - api_key: []
-    - basic_auth: []
   parameters:
     - name: conversion_id
       in: query

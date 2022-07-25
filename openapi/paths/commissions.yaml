@@ -6,9 +6,9 @@ get:
     Returns a list of commissions that have been created. The commissions are
     returned in sorted order, with most recent commissions first by default.
   operationId: listCommissions
-  security:
-    - api_key: []
-    - basic_auth: []
+  # security:
+  #   - api_key: []
+  #   - basic_auth: []
   parameters:
     - name: conversion_id
       in: query

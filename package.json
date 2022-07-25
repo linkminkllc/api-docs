@@ -9,6 +9,7 @@
   "scripts": {
     "start": "openapi preview-docs",
     "build": "openapi bundle -o dist",
+    "dist": "npx redoc-cli build openapi/openapi.yaml && mv redoc-static.html index.html",
     "test": "openapi lint"
   }
 }
