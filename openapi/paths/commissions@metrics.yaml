@@ -22,19 +22,21 @@ get:
       required: false
       schema:
         type: integer (Unix timestamp)
+        default: Current timestamp (result of `(new Date()).valueOf()`)
     - name: min_date
       in: query
       description: Return results where the `created` field is greater than this value.
       required: false
       schema:
         type: integer (Unix timestamp)
+        default: 0
     - name: status
       in: query
       description: Return results where the `status` equals this value.
       required: false
       schema:
         type: 
-        enum: [pending, approved, paid, denied, scheduled]
+        enum: [pending, approved, in-transit, paid, denied, scheduled]
     - name: affiliate_id
       in: query
       description: Only return results for this affiliate.
@@ -46,17 +48,31 @@ get:
       description: Only return results for the affiliates with this name (partial matches allowed)
       schema:
         type: string
+    - name: affiliate_email
+      in: query
+      description: Only return results for the affiliates with this email (partial matches allowed)
+      required: false
+      schema:
+        type: string
     - name: customer_id
       in: query
       description: Only return results for commissions related to this Stripe customer.
+      required: false
       schema:
         type: string
       example: cus_abc123
     - name: customer_email
       in: query
       description: Only return results for commissions related to these Stripe customers (customer emails aren't unique in Stripe).
+      required: false
       schema:
         type: string
+    - name: livemode
+      in: query
+      description: Choose whether to return live-mode or test-mode results.
+      required: false
+      schema:
+        type: boolean
   responses:
     '200':
       description: Returns an object with metrics about the commissions in the set described by the provided filters.

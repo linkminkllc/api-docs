@@ -1,0 +1,507 @@
+openapi: 3.0.2
+info:
+  version: 0.1.0
+  title: LinkMink
+  termsOfService: api.linkmink.com/terms
+  contact:
+    email: hello@linkmink.com
+  x-logo:
+    url: 'https://redocly.github.io/openapi-template/logo.png'
+  description: >
+    This is an **example** API to demonstrate features of OpenAPI specification
+
+    # Introduction
+
+    This API definition is intended to to be a good starting point for
+    describing your API in 
+
+    [OpenAPI/Swagger
+    format](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md).
+
+    It also demonstrates features of
+    [create-openapi-repo](https://github.com/Redocly/create-openapi-repo) tool
+    and 
+
+    [Redoc](https://github.com/Redocly/Redoc) documentation engine. So beyond
+    the standard OpenAPI syntax we use a few 
+
+    [vendor
+    extensions](https://github.com/Redocly/Redoc/blob/master/docs/redoc-vendor-extensions.md).
+
+
+    # OpenAPI Specification
+
+    The goal of The OpenAPI Specification is to define a standard,
+    language-agnostic interface to REST APIs which
+
+    allows both humans and computers to discover and understand the capabilities
+    of the service without access to source
+
+    code, documentation, or through network traffic inspection. When properly
+    defined via OpenAPI, a consumer can 
+
+    understand and interact with the remote service with a minimal amount of
+    implementation logic. Similar to what
+
+    interfaces have done for lower-level programming, OpenAPI removes the
+    guesswork in calling the service.
+externalDocs:
+  description: Find out how to create a GitHub repo for your OpenAPI definition.
+  url: 'https://github.com/Rebilly/generator-openapi-repo'
+tags:
+  - name: Commissions
+    description: Endpoints for working with commissions
+  - name: User
+    description: Operations about user
+servers:
+  - url: 'http://example.com/api/v1'
+  - url: 'https://example.com/api/v1'
+paths:
+  '/users/{username}':
+    parameters:
+      - name: pretty_print
+        in: query
+        description: Pretty print response
+        schema:
+          type: boolean
+    get:
+      tags:
+        - User
+      summary: Get user by user name
+      description: |
+        Some description of the operation. 
+        You can use `markdown` here.
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be fetched
+          required: true
+          schema:
+            type: string
+        - name: with_email
+          in: query
+          description: Filter users without email
+          schema:
+            type: boolean
+      security:
+        - main_auth:
+            - 'read:users'
+        - api_key: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              example:
+                username: user1
+                email: user@example.com
+        '403':
+          description: Forbidden
+        '404':
+          description: User not found
+    put:
+      tags:
+        - User
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be updated
+          required: true
+          schema:
+            type: string
+      security:
+        - main_auth:
+            - 'write:users'
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Invalid user supplied
+        '404':
+          description: User not found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Updated user object
+        required: true
+  /commissions:
+    get:
+      tags:
+        - Commissions
+      summary: List all commissions
+      description: >
+        Returns a list of commissions that have been created. The commissions
+        are
+
+        returned in sorted order, with most recent commissions first by default.
+      operationId: listCommissions
+      security:
+        - api_key: []
+        - basic_auth: []
+      parameters:
+        - name: conversion_id
+          in: query
+          description: Only return commissions from this conversion.
+          required: false
+          schema:
+            type: string
+        - name: max_date
+          in: query
+          description: Return results where the `created` field is less than this value.
+          required: false
+          schema:
+            type: integer (Unix timestamp)
+            default: Current timestamp (result of `(new Date()).valueOf()`)
+        - name: min_date
+          in: query
+          description: Return results where the `created` field is greater than this value.
+          required: false
+          schema:
+            type: integer (Unix timestamp)
+            default: 0
+        - name: status
+          in: query
+          description: Return results where the `status` equals this value.
+          required: false
+          schema:
+            type: null
+            enum:
+              - pending
+              - approved
+              - in-transit
+              - paid
+              - denied
+              - scheduled
+        - name: affiliate_id
+          in: query
+          description: Only return results for this affiliate.
+          required: false
+          schema:
+            type: string
+        - name: affiliate_name
+          in: query
+          description: >-
+            Only return results for the affiliates with this name (partial
+            matches allowed)
+          schema:
+            type: string
+        - name: affiliate_email
+          in: query
+          description: >-
+            Only return results for the affiliates with this email (partial
+            matches allowed)
+          required: false
+          schema:
+            type: string
+        - name: customer_id
+          in: query
+          description: Only return results for commissions related to this Stripe customer.
+          required: false
+          schema:
+            type: string
+          example: cus_abc123
+        - name: customer_email
+          in: query
+          description: >-
+            Only return results for commissions related to these Stripe
+            customers (customer emails aren't unique in Stripe).
+          required: false
+          schema:
+            type: string
+        - name: expand
+          in: query
+          description: Choose which related objects to expand for results.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - conversion
+                - affiliate
+          examples:
+            one_id:
+              summary: Only expand the conversion
+              value:
+                - conversion
+            multiple_ids:
+              summary: Expand both the conversion and the affiliate
+              value:
+                - conversion
+                - affiliate
+        - name: limit
+          in: query
+          description: Sets the page size that will be returned.
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 25
+        - name: livemode
+          in: query
+          description: Choose whether to return live-mode or test-mode results.
+          required: false
+          schema:
+            type: boolean
+        - name: sort_field
+          in: query
+          description: Choose which field to sort results on.
+          required: false
+          schema:
+            type: string
+            enum:
+              - created_at
+              - revenue
+              - commission
+            default: created_at
+        - name: sort_direction
+          in: query
+          description: Choose which direction to sort results.
+          required: false
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+      responses:
+        '200':
+          description: >-
+            Returns a list of commissions if valid filters were provided, and
+            returns an error otherwise
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Commission'
+        description: >-
+          Returns a list of commissions if valid filters were provided, and
+          returns an error otherwise
+  /commissions/metrics:
+    get:
+      tags:
+        - Commissions
+      summary: Return metrics about commissions
+      description: >
+        Returns an object with metrics about the set of commissions that would
+        be
+
+        returned from the provided filters.
+      operationId: getCommissionMetrics
+      security:
+        - api_key: []
+        - basic_auth: []
+      parameters:
+        - name: conversion_id
+          in: query
+          description: Only return commissions from this conversion.
+          required: false
+          schema:
+            type: string
+        - name: max_date
+          in: query
+          description: Return results where the `created` field is less than this value.
+          required: false
+          schema:
+            type: integer (Unix timestamp)
+            default: Current timestamp (result of `(new Date()).valueOf()`)
+        - name: min_date
+          in: query
+          description: Return results where the `created` field is greater than this value.
+          required: false
+          schema:
+            type: integer (Unix timestamp)
+            default: 0
+        - name: status
+          in: query
+          description: Return results where the `status` equals this value.
+          required: false
+          schema:
+            type: null
+            enum:
+              - pending
+              - approved
+              - in-transit
+              - paid
+              - denied
+              - scheduled
+        - name: affiliate_id
+          in: query
+          description: Only return results for this affiliate.
+          required: false
+          schema:
+            type: string
+        - name: affiliate_name
+          in: query
+          description: >-
+            Only return results for the affiliates with this name (partial
+            matches allowed)
+          schema:
+            type: string
+        - name: affiliate_email
+          in: query
+          description: >-
+            Only return results for the affiliates with this email (partial
+            matches allowed)
+          required: false
+          schema:
+            type: string
+        - name: customer_id
+          in: query
+          description: Only return results for commissions related to this Stripe customer.
+          required: false
+          schema:
+            type: string
+          example: cus_abc123
+        - name: customer_email
+          in: query
+          description: >-
+            Only return results for commissions related to these Stripe
+            customers (customer emails aren't unique in Stripe).
+          required: false
+          schema:
+            type: string
+        - name: livemode
+          in: query
+          description: Choose whether to return live-mode or test-mode results.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: >-
+            Returns an object with metrics about the commissions in the set
+            described by the provided filters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filters:
+                    description: An object with the filters used on this request.
+                    type: object
+                  metrics:
+                    description: The metrics for the current filter set.
+                    type: object
+                    properties:
+                      count:
+                        description: >-
+                          The number of commissions in the set described by the
+                          provided filters
+                        type: integer
+                        example: 1756
+components:
+  securitySchemes:
+    main_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: 'http://example.com/api/oauth/dialog'
+          scopes:
+            'read:users': read users info
+            'write:users': modify or remove users
+    api_key:
+      type: apiKey
+      in: header
+      name: api_key
+    basic_auth:
+      type: http
+      scheme: basic
+  schemas:
+    Email:
+      description: User email address
+      type: string
+      format: test
+      example: john.smith@example.com
+    User:
+      type: object
+      properties:
+        username:
+          description: User supplied username
+          type: string
+          minLength: 4
+          example: John78
+        firstName:
+          description: User first name
+          type: string
+          minLength: 1
+          example: John
+        lastName:
+          description: User last name
+          type: string
+          minLength: 1
+          example: Smith
+        email:
+          $ref: '#/components/schemas/Email'
+    Commission:
+      type: object
+      properties:
+        id:
+          description: Unique identifier for the object
+          type: string
+          example: com_MdZEf3LYnHxDOhwasVjQ
+        affiliate:
+          description: ID of the affiliate this commission is for.
+          type: string (Expandable)
+          length: 6
+          example: 3eI1Sw
+        commission:
+          description: >-
+            Amount of the commission in the smallest currency unit (e.g. 100
+            cents for $1.00).
+          type: integer
+          example: 524
+        conversion:
+          description: ID of the conversion this commission is for.
+          type: string
+          example: conv_Aek82BIYf2cP18v0JG8H
+        created_at:
+          description: Unix timestamp when this commission was created.
+          type: integer
+          example: 1626084731998
+        currency:
+          description: 'ISO currency code, in lowercase, of the `commission` and `revenue`.'
+          type: string
+          example: usd
+        livemode:
+          description: >-
+            Has the value true if the object exists in live mode or the value
+            false if the object exists in test mode.
+          type: boolean
+          example: true
+        payout:
+          description: ID of the payout this commission is bundled in.
+          type: string
+          nullable: true
+          example: pyo_lsdkfj5oAdiislQ
+        revenue:
+          description: >-
+            Amount of the revenue in the smallest currency unit (e.g. 100 cents
+            for $1.00).
+          type: string
+          example: 1747
+        status:
+          description: The status of the commission
+          schema:
+            type: string
+            enum:
+              - pending
+              - approved
+              - scheduled
+              - denied
+              - in-transit
+              - paid
+          example: approved

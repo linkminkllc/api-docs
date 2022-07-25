@@ -15,8 +15,8 @@ properties:
     example: 524
   conversion:
     description: ID of the conversion this commission is for.
-    type: integer
-    example: 524
+    type: string
+    example: conv_Aek82BIYf2cP18v0JG8H
   created_at:
     description: Unix timestamp when this commission was created.
     type: integer
@@ -38,3 +38,9 @@ properties:
     description: Amount of the revenue in the smallest currency unit (e.g. 100 cents for $1.00).
     type: string
     example: 1747
+  status: 
+    description: The status of the commission
+    schema: 
+      type: string
+      enum: [pending, approved, scheduled, denied, in-transit, paid]
+    example: approved

@@ -22,19 +22,21 @@ get:
       required: false
       schema:
         type: integer (Unix timestamp)
+        default: Current timestamp (result of `(new Date()).valueOf()`)
     - name: min_date
       in: query
       description: Return results where the `created` field is greater than this value.
       required: false
       schema:
         type: integer (Unix timestamp)
+        default: 0
     - name: status
       in: query
       description: Return results where the `status` equals this value.
       required: false
       schema:
         type: 
-        enum: [pending, approved, paid, denied, scheduled]
+        enum: [pending, approved, in-transit, paid, denied, scheduled]
     - name: affiliate_id
       in: query
       description: Only return results for this affiliate.
@@ -46,17 +48,72 @@ get:
       description: Only return results for the affiliates with this name (partial matches allowed)
       schema:
         type: string
+    - name: affiliate_email
+      in: query
+      description: Only return results for the affiliates with this email (partial matches allowed)
+      required: false
+      schema:
+        type: string
     - name: customer_id
       in: query
       description: Only return results for commissions related to this Stripe customer.
+      required: false
       schema:
         type: string
       example: cus_abc123
     - name: customer_email
       in: query
       description: Only return results for commissions related to these Stripe customers (customer emails aren't unique in Stripe).
+      required: false
       schema:
         type: string
+    - name: expand
+      in: query
+      description: Choose which related objects to expand for results. 
+      required: false
+      schema:
+        type: array
+        items: 
+          type: string
+          enum: [conversion, affiliate]
+      examples: 
+        one_id:
+          summary: Only expand the conversion
+          value: [conversion]
+        multiple_ids:
+          summary: Expand both the conversion and the affiliate
+          value: [conversion, affiliate]
+    - name: limit
+      in: query
+      description: Sets the page size that will be returned.
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    - name: livemode
+      in: query
+      description: Choose whether to return live-mode or test-mode results.
+      required: false
+      schema:
+        type: boolean
+    - name: sort_field
+      in: query
+      description: Choose which field to sort results on.
+      required: false
+      schema:
+        type: string
+        enum: [created_at, revenue, commission]
+        default: created_at
+    - name: sort_direction
+      in: query
+      description: Choose which direction to sort results.
+      required: false
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
   responses:
     description: Returns a list of commissions if valid filters were provided, and returns an error otherwise
     '200':
