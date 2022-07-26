@@ -83,12 +83,25 @@ get:
                 type: object
               metrics:
                 description: The metrics for the current filter set.
-                type: object
-                properties:
-                  count:
-                    description: The number of commissions in the set described by the provided filters
-                    type: integer
-                    example: 1756
+                type: array
+                items: 
+                  type: object
+                  properties:
+                    currency: 
+                      type: string
+                    count:
+                      description: The number of commissions in the set described by the provided filters
+                      type: integer
+                    commissions:
+                      description: The number of commissions in the set described by the provided filters
+                      type: integer
+                  example:
+                    - currency: usd
+                      count: 1756
+                      commissions: 9812236
+                    - currency: gbp
+                      count: 32
+                      commissions: 92513
     # '200':
     #   description: OK
     #   headers:
