@@ -1,0 +1,129 @@
+get:
+  tags:
+    - Conversions
+  summary: List all conversions
+  description: |
+    Returns a list of conversions that have been created. The conversions are
+    returned in sorted order, with most recent conversions first by default.
+  operationId: listConversions
+  # security:
+  #   - api_key: []
+  #   - basic_auth: []
+  parameters:
+    - name: max_date
+      in: query
+      description: Return results where the `created` field is less than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+        default: Current timestamp (result of `(new Date()).valueOf()`)
+    - name: min_date
+      in: query
+      description: Return results where the `created` field is greater than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+        default: 0
+    - name: status
+      in: query
+      description: Return results where the `status` equals this value.
+      required: false
+      schema:
+        type: 
+        enum: [pending, approved, in-transit, paid, denied, scheduled]
+    - name: affiliate_id
+      in: query
+      description: Only return results for this affiliate.
+      required: false
+      schema:
+        type: string
+    - name: affiliate_name
+      in: query
+      description: Only return results for the affiliates with this name (partial matches allowed)
+      schema:
+        type: string
+    - name: affiliate_email
+      in: query
+      description: Only return results for the affiliates with this email (partial matches allowed)
+      required: false
+      schema:
+        type: string
+    - name: customer_id
+      in: query
+      description: Only return results for conversions related to this Stripe customer.
+      required: false
+      schema:
+        type: string
+      example: cus_abc123
+    - name: customer_email
+      in: query
+      description: Only return results for conversions related to these Stripe customers (customer emails aren't unique in Stripe).
+      required: false
+      schema:
+        type: string
+    - name: expand
+      in: query
+      description: Choose which related objects to expand for results. 
+      required: false
+      schema:
+        type: array
+        items: 
+          type: string
+          enum: [conversion, affiliate]
+      examples: 
+        one_id:
+          summary: Only expand the conversion
+          value: [conversion]
+        multiple_ids:
+          summary: Expand both the conversion and the affiliate
+          value: [conversion, affiliate]
+    - name: limit
+      in: query
+      description: Sets the page size that will be returned.
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 25
+    - name: livemode
+      in: query
+      description: Choose whether to return live-mode or test-mode results.
+      required: false
+      schema:
+        type: boolean
+    - name: sort_field
+      in: query
+      description: Choose which field to sort results on.
+      required: false
+      schema:
+        type: string
+        enum: [created_at, revenue, commission]
+        default: created_at
+    - name: sort_direction
+      in: query
+      description: Choose which direction to sort results.
+      required: false
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: desc
+    - name: starting_after
+      in: query
+      description: Get `limit` conversions *after* this conversion (for pagination)
+      required: false
+      type: string
+    - name: ending_before
+      in: query
+      description: Get `limit` conversions *before* this conversion (for pagination)
+      type: string
+  responses:
+    description: Returns a list of conversions if valid filters were provided, and returns an error otherwise
+    '200':
+      description: Returns a list of conversions if valid filters were provided, and returns an error otherwise
+      content:
+        application/json:
+          schema:
+            type: array
+            items: 
+              $ref: ../components/schemas/Conversion.yaml

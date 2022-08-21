@@ -1,0 +1,40 @@
+type: object
+properties:
+  id:
+    description: Unique identifier for the object
+    type: string
+    example: conv_MdZEf3LYnHxDOhwasVjQ 
+  affiliate:
+    description: [expandable] ID of the affiliate this conversion is for.
+    type: string (Expandable)
+    length: 6
+    example: 3eI1Sw
+  created_at:
+    description: Unix timestamp when this conversion was created.
+    type: integer
+    example: 1626084731998
+  livemode:
+    description: Has the value true if the object exists in live mode or the value false if the object exists in test mode.
+    type: boolean
+    example: true
+  status: 
+    description: The status of the conversion
+    schema: 
+      type: string
+      enum: [pending, approved, scheduled, denied, in-transit, paid]
+    example: approved
+  customer: 
+    description: The Stripe-id of the customer (if the conversion was tracked & connected to a Stripe customer)
+    type: string
+  email: 
+    description: The email of the customer who the conversion was tracked for
+    type: string
+  subscription:
+    description: The Stripe-id of the subscription (if the conversion was tracked & connected to a Stripe subscription)
+    type: string
+  charge:
+    description: The Stripe-id of the charge (if the conversion was tracked & connected to a Stripe charge)
+    type: string
+  referral: 
+    description: [expandable] The `referral_id` of the LinkMink referral which this conversion was for
+    type: string
