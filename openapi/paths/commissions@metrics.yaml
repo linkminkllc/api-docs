@@ -7,12 +7,6 @@ get:
     returned from the provided filters.
   operationId: getCommissionMetrics
   parameters:
-    - name: conversion_id
-      in: query
-      description: Only return commissions from this conversion.
-      required: false
-      schema:
-        type: string
     - name: max_date
       in: query
       description: Return results where the `created` field is less than this value.
@@ -51,6 +45,19 @@ get:
       required: false
       schema:
         type: string
+    - name: bin_size
+      in: query
+      description: Enables binning of the results by day, month, week, etc...
+      required: false
+      schema:
+        type: string
+        enum: [day, week, month, year]
+    - name: conversion_id
+      in: query
+      description: Only return commissions from this conversion.
+      required: false
+      schema:
+        type: string
     - name: customer_id
       in: query
       description: Only return results for commissions related to this Stripe customer.
@@ -70,6 +77,13 @@ get:
       required: false
       schema:
         type: boolean
+    - name: sub_bin
+      in: query
+      description: Sub-divide bins (or the whole result) by status, tag, etc...
+      required: false
+      schema:
+        type: string
+        enum: [status, tag]
   responses:
     '200':
       description: Returns an object with metrics about the commissions in the set described by the provided filters.
@@ -81,27 +95,58 @@ get:
               filters:
                 description: An object with the filters used on this request.
                 type: object
+                # schema:
+                #   properties:
+                #     livemode:
+                #       type: boolean
+                #     min_date: 
+                #       type: integer
+                #     max_date: 
+                #       type: integer
+                example: 
+                  livemode: true
+                  min_date: 0
+                  max_date: 1658966400000
               metrics:
                 description: The metrics for the current filter set.
                 type: array
                 items: 
                   type: object
+                  required:
+                    - currency
+                    - count
+                    - commissions
+                    - revenue
                   properties:
                     currency: 
                       type: string
+                    status: 
+                      type: string
+                      description: The status of the bin (if `sub_bin=status` is used)
+                    bin_start: 
+                      type: integer
+                      description: The start date of the bin (if `bin_size` is used)
+                    bin_end: 
+                      type: integer
+                      description: The bin_end date of the bin (if `bin_size` is used)
                     count:
                       description: The number of commissions in the set described by the provided filters
                       type: integer
                     commissions:
-                      description: The number of commissions in the set described by the provided filters
+                      description: The total value of commissions in the set described by the provided filters
                       type: integer
-                  example:
+                    revenue:
+                      description: The total value of revenue in the set described by the provided filters
+                      type: integer
+                  examples:
                     - currency: usd
                       count: 1756
                       commissions: 9812236
+                      revenue: 32707453
                     - currency: gbp
                       count: 32
                       commissions: 92513
+                      revenue: 308376
     # '200':
     #   description: OK
     #   headers:
