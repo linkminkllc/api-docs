@@ -1,0 +1,169 @@
+get:
+  tags:
+    - Conversions
+  summary: Return metrics about conversions
+  description: |
+    Returns an object with metrics about the set of conversions that would be
+    returned from the provided filters.
+  operationId: getConversionMetrics
+  parameters:
+    - name: max_date
+      in: query
+      description: Return results where the `created` field is less than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+        default: Current timestamp (result of `(new Date()).valueOf()`)
+    - name: min_date
+      in: query
+      description: Return results where the `created` field is greater than this value.
+      required: false
+      schema:
+        type: integer (Unix timestamp)
+        default: 0
+    - name: status
+      in: query
+      description: Return results where the `status` equals this value.
+      required: false
+      type: string
+    - name: affiliate_id
+      in: query
+      description: Only return results for this affiliate.
+      required: false
+      schema:
+        type: string
+    - name: affiliate_name
+      in: query
+      description: Only return results for the affiliates with this name (partial matches allowed)
+      schema:
+        type: string
+    - name: affiliate_email
+      in: query
+      description: Only return results for the affiliates with this email (partial matches allowed)
+      required: false
+      schema:
+        type: string
+    - name: bin_size
+      in: query
+      description: Enables binning of the results by day, month, week, etc...
+      required: false
+      schema:
+        type: string
+        enum: [day, week, month, year]
+    - name: customer_id
+      in: query
+      description: Only return results for conversions related to this Stripe customer.
+      required: false
+      schema:
+        type: string
+      example: cus_abc123
+    - name: customer_email
+      in: query
+      description: Only return results for conversions related to these Stripe customers (customer emails aren't unique in Stripe).
+      required: false
+      schema:
+        type: string
+    - name: livemode
+      in: query
+      description: Choose whether to return live-mode or test-mode results.
+      required: false
+      schema:
+        type: boolean
+    - name: sub_bin
+      in: query
+      description: Sub-divide bins (or the whole result) by status, tag, etc...
+      required: false
+      schema:
+        type: string
+        enum: [status, tag]
+  responses:
+    '200':
+      description: Returns an object with metrics about the conversions in the set described by the provided filters.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              filters:
+                description: An object with the filters used on this request.
+                type: object
+                # schema:
+                #   properties:
+                #     livemode:
+                #       type: boolean
+                #     min_date: 
+                #       type: integer
+                #     max_date: 
+                #       type: integer
+                example: 
+                  livemode: true
+                  min_date: 0
+                  max_date: 1658966400000
+              metrics:
+                description: The metrics for the current filter set.
+                type: array
+                items: 
+                  type: object
+                  required:
+                    - currency
+                    - count
+                    - conversions
+                    - revenue
+                  properties:
+                    currency: 
+                      type: string
+                    status: 
+                      type: string
+                      description: The status of the bin (if `sub_bin=status` is used)
+                    bin_start: 
+                      type: integer
+                      description: The start date of the bin (if `bin_size` is used)
+                    bin_end: 
+                      type: integer
+                      description: The bin_end date of the bin (if `bin_size` is used)
+                    count:
+                      description: The number of conversions in the set described by the provided filters
+                      type: integer
+                    conversions:
+                      description: The total value of conversions in the set described by the provided filters
+                      type: integer
+                    revenue:
+                      description: The total value of revenue in the set described by the provided filters
+                      type: integer
+                  examples:
+                    - count: 1756
+    # '200':
+    #   description: OK
+    #   headers:
+    #     X-Rate-Limit:
+    #       description: calls per hour allowed by the user
+    #       schema:
+    #         type: integer
+    #         format: int32
+    #     X-Expires-After:
+    #       $ref: ../components/headers/ExpiresAfter.yaml
+    #   content:
+    #     application/json:
+    #       schema:
+    #         type: string
+    #       examples:
+    #         response:
+    #           value: Hello world!
+    #     application/xml:
+    #       schema:
+    #         type: string
+    #     text/csv:
+    #       schema:
+    #         type: string
+  # requestBody:
+  #   content:
+  #     application/json:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #     application/xml:
+  #       schema:
+  #         type: string
+  #         example: Hello world!
+  #   description: Echo payload
+  #   required: true

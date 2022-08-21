@@ -35,6 +35,10 @@ paths:
     $ref: paths/commissions.yaml
   /commissions/metrics:
     $ref: paths/commissions@metrics.yaml
+  /conversions:
+    $ref: paths/conversions.yaml
+  /conversions/metrics:
+    $ref: paths/conversions@metrics.yaml
 components:
   securitySchemes:
     api_key:

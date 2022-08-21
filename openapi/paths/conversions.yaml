@@ -29,8 +29,7 @@ get:
       description: Return results where the `status` equals this value.
       required: false
       schema:
-        type: 
-        enum: [pending, approved, in-transit, paid, denied, scheduled]
+        type: string
     - name: affiliate_id
       in: query
       description: Only return results for this affiliate.
@@ -69,14 +68,14 @@ get:
         type: array
         items: 
           type: string
-          enum: [conversion, affiliate]
+          enum: [referral, affiliate]
       examples: 
         one_id:
-          summary: Only expand the conversion
-          value: [conversion]
+          summary: Only expand the referral
+          value: [referral]
         multiple_ids:
           summary: Expand both the conversion and the affiliate
-          value: [conversion, affiliate]
+          value: [referral, affiliate]
     - name: limit
       in: query
       description: Sets the page size that will be returned.
@@ -92,22 +91,22 @@ get:
       required: false
       schema:
         type: boolean
-    - name: sort_field
-      in: query
-      description: Choose which field to sort results on.
-      required: false
-      schema:
-        type: string
-        enum: [created_at, revenue, commission]
-        default: created_at
-    - name: sort_direction
-      in: query
-      description: Choose which direction to sort results.
-      required: false
-      schema:
-        type: string
-        enum: [asc, desc]
-        default: desc
+    # - name: sort_field
+    #   in: query
+    #   description: Choose which field to sort results on.
+    #   required: false
+    #   schema:
+    #     type: string
+    #     enum: [created_at, revenue, commission]
+    #     default: created_at
+    # - name: sort_direction
+    #   in: query
+    #   description: Choose which direction to sort results.
+    #   required: false
+    #   schema:
+    #     type: string
+    #     enum: [asc, desc]
+    #     default: desc
     - name: starting_after
       in: query
       description: Get `limit` conversions *after* this conversion (for pagination)

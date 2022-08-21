@@ -5,7 +5,7 @@ properties:
     type: string
     example: conv_MdZEf3LYnHxDOhwasVjQ 
   affiliate:
-    description: [expandable] ID of the affiliate this conversion is for.
+    description: expandable ID of the affiliate this conversion is for.
     type: string (Expandable)
     length: 6
     example: 3eI1Sw
@@ -19,10 +19,12 @@ properties:
     example: true
   status: 
     description: The status of the conversion
-    schema: 
-      type: string
-      enum: [pending, approved, scheduled, denied, in-transit, paid]
+    type: string
     example: approved
+  type: 
+    description: The type of the conversion
+    type: string
+    example: Stripe Object
   customer: 
     description: The Stripe-id of the customer (if the conversion was tracked & connected to a Stripe customer)
     type: string
@@ -36,5 +38,5 @@ properties:
     description: The Stripe-id of the charge (if the conversion was tracked & connected to a Stripe charge)
     type: string
   referral: 
-    description: [expandable] The `referral_id` of the LinkMink referral which this conversion was for
+    description: expandable The `referral_id` of the LinkMink referral which this conversion was for
     type: string
